@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FreshMart Billing</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <h1>FreshMart Billing</h1>
+        <p>Instant billing for shampoos, soaps, snacks, chocolates, and more.</p>
+      </div>
+      <nav class="view-switch">
+        <button data-view="billing" class="active">Billing</button>
+        <button data-view="admin">Manage Menu</button>
+        <button data-view="reports">Sales Report</button>
+      </nav>
+    </header>
+
+    <main>
+      <section id="billing-view" class="view active">
+        <div class="menu-panel">
+          <div class="menu-header">
+            <div>
+              <h2>Menu</h2>
+              <p class="muted small">Tap an item to add it to the bill.</p>
+            </div>
+            <div class="menu-tools">
+              <label class="sr-only" for="product-search">Search products</label>
+              <div class="search-field">
+                <span class="search-icon">🔍</span>
+                <input
+                  type="search"
+                  id="product-search"
+                  placeholder="Search shampoo, snacks, chocolates..."
+                  autocomplete="off"
+                />
+              </div>
+              <label class="sr-only" for="category-filter">Filter category</label>
+              <select id="category-filter">
+                <option value="all">All Categories</option>
+              </select>
+            </div>
+          </div>
+          <div id="menu-grid" class="menu-grid"></div>
+        </div>
+        <div class="cart-panel">
+          <h2>Cart &amp; Bill</h2>
+          <ul id="cart-items" class="cart-items"></ul>
+          <div class="bill-footer">
+            <div>
+              <p>Subtotal: <strong id="subtotal">₹0.00</strong></p>
+              <p>GST (5%): <strong id="tax">₹0.00</strong></p>
+              <p class="grand-total">Total: <span id="grand-total">₹0.00</span></p>
+            </div>
+            <div class="cart-actions">
+              <button id="clear-cart" class="secondary">Clear Cart</button>
+              <button id="print-bill" class="secondary">Print Bill</button>
+              <button id="pay-now" class="primary">Pay Now</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="admin-view" class="view">
+        <div class="admin-panel">
+          <h2>Menu Management</h2>
+          <form id="product-form">
+            <input type="hidden" id="product-id" name="productId" />
+            <div class="form-row">
+              <label>Name</label>
+              <input type="text" id="product-name" name="name" required />
+            </div>
+            <div class="form-row">
+              <label>Category</label>
+              <input type="text" id="product-category" name="category" list="category-options" required />
+              <datalist id="category-options">
+                <option value="Shampoo"></option>
+                <option value="Soap"></option>
+                <option value="Face Wash"></option>
+                <option value="Face Cream"></option>
+                <option value="Kids Snacks"></option>
+                <option value="Chocolate"></option>
+              </datalist>
+            </div>
+            <div class="form-row">
+              <label>Price (₹)</label>
+              <input type="number" id="product-price" name="price" min="0" step="0.01" required />
+            </div>
+            <div class="form-row">
+              <label>Image URL</label>
+              <input type="url" id="product-image" name="image" placeholder="https://..." />
+            </div>
+            <div class="form-row inline">
+              <label>
+                <input type="checkbox" id="product-active" name="active" checked />
+                Available for billing
+              </label>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="primary">Save Product</button>
+              <button type="button" id="reset-form" class="secondary">Reset</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="admin-table">
+          <h3>Current Menu</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="product-table"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="reports-view" class="view">
+        <div class="report-panel">
+          <h2>Monthly Sales Report</h2>
+          <div class="report-filters">
+            <label for="report-month">Month</label>
+            <input type="month" id="report-month" />
+            <button id="refresh-report" class="secondary">Refresh</button>
+            <button id="download-csv" class="primary">Download CSV</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Sale ID</th>
+                <th>Date</th>
+                <th>Payment</th>
+                <th>Items</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody id="report-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <div id="toast"></div>
+
+    <dialog id="payment-dialog">
+      <form method="dialog">
+        <h3>Pay with QR</h3>
+        <img id="qr-image" alt="Payment QR" width="200" height="200" />
+        <p>Total payable: <strong id="qr-total">₹0.00</strong></p>
+        <div class="dialog-actions">
+          <button value="cancel" class="secondary">Cancel</button>
+          <button value="confirm" class="primary">Payment Complete</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
+
